@@ -110,3 +110,29 @@ def patternMatchPos(pattern,text):
         if text[i:i+len(pattern)]==pattern:
             res.append(i)
     return res
+
+
+def clumpFinding(genome, k , t, L):
+    frequentPatterns = set()
+    clump = [0 for i in range(4**k)]
+    text = genome[:L]
+    frequencyArray = computingFrequencies(text,k)
+    for i in range(4**k):
+        if frequencyArray[i]>=t:
+            clump[i] = 1
+    for i in range(1, len(genome)-L+1):
+        firstPattern = genome[i-1:i+k-1]
+        index = patternToNumber(firstPattern)
+        frequencyArray[index]-=1
+        lastPattern = genome[i+L-k: i+L]
+        index = patternToNumber(lastPattern)
+        frequencyArray[index] += 1
+        if frequencyArray[index]>= t:
+            clump[index] = 1
+        #print(firstPattern)
+        #print(lastPattern)
+    for i in range(4**k):
+        if clump[i]==1:
+            pattern = numberToPattern(i, k)
+            frequentPatterns.add(pattern)
+    return frequentPatterns
